@@ -140,8 +140,9 @@ class cyclegan(object):
 
         for epoch in range(args.epoch):
             print("Training epoch {} of {}".format(epoch, args.epoch))
-            dataA = glob('./datasets/{}/*.*'.format(self.dataset_dir + '/trainA'))
-            dataB = glob('./datasets/{}/*.*'.format(self.dataset_dir + '/trainB'))
+            dataA = glob('{}/*.*'.format(self.dataset_dir + '/trainA'))
+            dataB = glob('{}/*.*'.format(self.dataset_dir + '/trainB'))
+            print("Found {} A files and {} B files".format(len(dataA), len(dataB)))
             np.random.shuffle(dataA)
             np.random.shuffle(dataB)
             batch_idxs = min(min(len(dataA), len(dataB)), args.train_size) // self.batch_size
