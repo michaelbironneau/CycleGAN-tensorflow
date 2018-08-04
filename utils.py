@@ -56,9 +56,8 @@ def load_train_data(image_path, load_size=286, fine_size=256, is_testing=False):
         img_B = scipy.misc.imresize(img_B, [load_size, load_size])
         h1 = int(np.ceil(np.random.uniform(1e-2, load_size-fine_size)))
         w1 = int(np.ceil(np.random.uniform(1e-2, load_size-fine_size)))
-        img_A = img_A[h1:h1+fine_size, w1:w1+fine_size]
-        img_B = img_B[h1:h1+fine_size, w1:w1+fine_size]
-
+        img_A = img_A[:fine_size, w1:w1+fine_size]
+        img_B = img_B[:fine_size, w1:w1+fine_size]
         if np.random.random() > 0.5:
             img_A = np.fliplr(img_A)
             img_B = np.fliplr(img_B)
@@ -112,11 +111,22 @@ def center_crop(x, crop_h, crop_w,
   i = int(round((w - crop_w)/2.))
   return scipy.misc.imresize(
       x[j:j+crop_h, i:i+crop_w], [resize_h, resize_w])
+      
+def top_crop(x, crop_h, crop_w, resize_h=64, resize_w=64):
+    if crop_w is None:
+        crop_w = crop_h
+    h, w = x.shape[:2]
+    j = crop_h
+    i = int(round((w - crop_w)/2.))
+    return scipy.misc.imresize(x[:j,i:i+crop_w], [resize_h, resize_w])
 
-def transform(image, npx=64, is_crop=True, resize_w=64):
+def transform(image, npx=64, is_crop=True, resize_w=64, crop_type='center'):
     # npx : # of pixels width/height of image
     if is_crop:
-        cropped_image = center_crop(image, npx, resize_w=resize_w)
+        if crop_type == 'center':
+            cropped_image = center_crop(image, npx, resize_w=resize_w)
+        else:
+            cropped_image = top_crop(image, npx, resize_w=resize_w)
     else:
         cropped_image = image
     return np.array(cropped_image)/127.5 - 1.
