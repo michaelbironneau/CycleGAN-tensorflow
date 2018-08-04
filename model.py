@@ -139,6 +139,7 @@ class cyclegan(object):
                 print(" [!] Load failed...")
 
         for epoch in range(args.epoch):
+            print("Training epoch {} of {}".format(epoch, args.epoch))
             dataA = glob('./datasets/{}/*.*'.format(self.dataset_dir + '/trainA'))
             dataB = glob('./datasets/{}/*.*'.format(self.dataset_dir + '/trainB'))
             np.random.shuffle(dataA)
@@ -147,6 +148,7 @@ class cyclegan(object):
             lr = args.lr if epoch < args.epoch_step else args.lr*(args.epoch-epoch)/(args.epoch-args.epoch_step)
 
             for idx in range(0, batch_idxs):
+                print("Starting training on idx {} of {}".format(idx, batch_idxs))
                 batch_files = list(zip(dataA[idx * self.batch_size:(idx + 1) * self.batch_size],
                                        dataB[idx * self.batch_size:(idx + 1) * self.batch_size]))
                 batch_images = [load_train_data(batch_file, args.load_size, args.fine_size) for batch_file in batch_files]
